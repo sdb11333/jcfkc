@@ -6,27 +6,14 @@
     <title>Главная страница</title>
     <link rel="stylesheet" href="styles.css">
     <script>
-        // Проверка роли пользователя при загрузке страницы
         window.onload = function() {
-            const userRole = localStorage.getItem('userRole');
-            const loginButton = document.getElementById('loginButton');
-            const logoutButton = document.getElementById('logoutButton');
+            // Загружаем контент сайта, который может быть изменен через панель основателя
+            const savedTitle = localStorage.getItem('siteTitle') || 'Добро пожаловать на сайт!';
+            const savedDescription = localStorage.getItem('siteDescription') || 'Это основной сайт, доступный всем пользователям.';
 
-            // Если пользователь авторизован, показываем кнопку "Выйти" и скрываем "Войти"
-            if (userRole) {
-                loginButton.style.display = 'none';  // Скрыть кнопку "Войти"
-                logoutButton.style.display = 'block'; // Показать кнопку "Выйти"
-            } else {
-                loginButton.style.display = 'block'; // Показать кнопку "Войти"
-                logoutButton.style.display = 'none'; // Скрыть кнопку "Выйти"
-            }
+            document.getElementById('siteTitle').innerText = savedTitle;
+            document.getElementById('siteDescription').innerText = savedDescription;
         };
-
-        // Логика для выхода из системы
-        function logout() {
-            localStorage.removeItem('userRole'); // Удаляем роль пользователя из localStorage
-            window.location.href = 'index.html'; // Перенаправляем на главную страницу
-        }
     </script>
 </head>
 <body>
@@ -36,17 +23,14 @@
         <nav>
             <ul>
                 <li><a href="index.html">Главная</a></li>
-                <!-- Кнопка входа -->
-                <li><a id="loginButton" href="login.html">Войти</a></li>
-                <!-- Кнопка выхода (скрыта по умолчанию) -->
-                <li><button id="logoutButton" style="display: none;" onclick="logout()">Выйти</button></li>
+                <li><a href="login.html">Войти</a></li>
             </ul>
         </nav>
     </header>
 
     <section class="content">
-        <h2>О сайте</h2>
-        <p>Это основной сайт, доступный всем пользователям.</p>
+        <h2 id="siteTitle">Добро пожаловать на сайт!</h2>
+        <p id="siteDescription">Это основной сайт, доступный всем пользователям.</p>
     </section>
 
     <footer>
