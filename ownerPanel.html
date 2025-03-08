@@ -6,77 +6,69 @@
     <title>Панель основателя</title>
     <link rel="stylesheet" href="styles.css">
     <script>
-        // Логика для проверки роли пользователя при загрузке страницы
+        // Проверка роли пользователя
         window.onload = function() {
             const userRole = localStorage.getItem('userRole');
             if (userRole !== 'owner') {
-                window.location.href = 'login.html'; // Перенаправление, если пользователь не основатель
+                window.location.href = 'login.html'; // Перенаправляем, если не основатель
             }
-
-            loadContent(); // Загружаем сохраненный контент сайта при открытии панели
-            loadLogs();   // Загружаем журнал действий
+            loadContent(); // Загружаем контент
+            loadLogs(); // Загружаем журнал
         };
 
-        // Функция для редактирования текста сайта
+        // Редактирование контента
         function editSiteContent() {
             const newTitle = prompt("Введите новый заголовок сайта:");
             const newDescription = prompt("Введите новое описание сайта:");
 
             if (newTitle) {
-                localStorage.setItem('siteTitle', newTitle); // Сохраняем новый заголовок в localStorage
+                localStorage.setItem('siteTitle', newTitle); // Сохраняем новый заголовок
             }
-
             if (newDescription) {
-                localStorage.setItem('siteDescription', newDescription); // Сохраняем новое описание в localStorage
+                localStorage.setItem('siteDescription', newDescription); // Сохраняем описание
             }
 
             alert("Изменения сохранены!");
-            loadContent(); // Загружаем обновленный контент
-            logAction('Редактирование контента сайта'); // Записываем действие в журнал
+            loadContent(); // Обновляем отображение контента
+            logAction('Редактирование контента сайта'); // Логируем действие
         }
 
-        // Функция для загрузки контента с сайта
+        // Загрузка контента
         function loadContent() {
             const savedTitle = localStorage.getItem('siteTitle') || 'Добро пожаловать на сайт!';
             const savedDescription = localStorage.getItem('siteDescription') || 'Это основной сайт, доступный всем пользователям.';
-
             document.getElementById('siteTitle').innerText = savedTitle;
             document.getElementById('siteDescription').innerText = savedDescription;
         }
 
-        // Функция для блокировки пользователя
+        // Блокировка пользователя
         function blockUser() {
             const username = prompt("Введите имя пользователя для блокировки:");
             const duration = prompt("Введите длительность блокировки в минутах:");
 
             if (username && duration) {
-                const blockUntil = new Date().getTime() + (duration * 60000); // Блокировка на определенное время
+                const blockUntil = new Date().getTime() + (duration * 60000);
                 const blockedUsers = JSON.parse(localStorage.getItem('blockedUsers')) || [];
                 blockedUsers.push({ username, blockUntil });
-                localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers)); // Сохраняем список заблокированных пользователей
+                localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
 
-                logAction(`Основатель заблокировал пользователя ${username} на ${duration} минут`); // Записываем действие в журнал
+                logAction(`Заблокирован пользователь: ${username} на ${duration} минут`);
                 alert(`Пользователь ${username} заблокирован на ${duration} минут.`);
             }
         }
 
-        // Функция для проверки блокированных пользователей
-        function checkBlockedUsers() {
+        // Проверка заблокированных пользователей
+        function showBlockedUsers() {
             const blockedUsers = JSON.parse(localStorage.getItem('blockedUsers')) || [];
-            const currentTime = new Date().getTime();
-
-            // Удаляем заблокированных пользователей, у которых срок блокировки истек
-            const activeBlockedUsers = blockedUsers.filter(user => user.blockUntil > currentTime);
-
-            // Обновляем данные заблокированных пользователей в localStorage
-            localStorage.setItem('blockedUsers', JSON.stringify(activeBlockedUsers));
-
+            const activeBlockedUsers = blockedUsers.filter(user => user.blockUntil > new Date().getTime());
             if (activeBlockedUsers.length > 0) {
                 alert(`Заблокированные пользователи: ${activeBlockedUsers.map(user => user.username).join(', ')}`);
+            } else {
+                alert("Нет заблокированных пользователей.");
             }
         }
 
-        // Функция для логирования действий
+        // Логирование действий
         function logAction(action) {
             const date = new Date().toLocaleString();
             const user = localStorage.getItem('userRole');
@@ -85,59 +77,11 @@
             let logs = JSON.parse(localStorage.getItem('logs')) || [];
             logs.push(logEntry);
             localStorage.setItem('logs', JSON.stringify(logs));
-
-            // Выводим логи в консоль
-            console.log(logEntry);
         }
 
-        // Функция для вывода всех заблокированных пользователей
-        function showBlockedUsers() {
-            const blockedUsers = JSON.parse(localStorage.getItem('blockedUsers')) || [];
-
-            if (blockedUsers.length > 0) {
-                alert(`Заблокированные пользователи: ${blockedUsers.map(user => user.username).join(', ')}`);
-            } else {
-                alert("Нет заблокированных пользователей.");
-            }
-        }
-
-        // Функция для присвоения роли пользователю
-        function assignRole() {
-            const username = prompt("Введите имя пользователя:");
-            const role = prompt("Введите роль пользователя (admin/moderator/user):");
-
-            if (username && role) {
-                const users = JSON.parse(localStorage.getItem('users')) || [];
-                let user = users.find(u => u.username === username);
-
-                if (!user) {
-                    user = { username, role: 'user' }; // По умолчанию роль 'user'
-                    users.push(user);
-                } else {
-                    user.role = role; // Обновляем роль
-                }
-
-                localStorage.setItem('users', JSON.stringify(users)); // Сохраняем список пользователей
-                logAction(`Основатель присвоил пользователю ${username} роль ${role}`); // Записываем действие в журнал
-                alert(`Роль для пользователя ${username} изменена на ${role}.`);
-            }
-        }
-
-        // Функция для отображения всех пользователей и их ролей
-        function showUsers() {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-
-            if (users.length > 0) {
-                alert(`Пользователи и их роли: ${users.map(user => `${user.username}: ${user.role}`).join(', ')}`);
-            } else {
-                alert("Нет пользователей.");
-            }
-        }
-
-        // Функция для отображения журнала действий
+        // Вывод журнала
         function viewLogs() {
             const logs = JSON.parse(localStorage.getItem('logs')) || [];
-
             if (logs.length > 0) {
                 alert(`Журнал действий:\n${logs.map(log => `[${log.date}] ${log.user}: ${log.action}`).join('\n')}`);
             } else {
@@ -145,30 +89,53 @@
             }
         }
 
-        // Функция для выхода из системы
+        // Присвоение роли
+        function assignRole() {
+            const username = prompt("Введите имя пользователя:");
+            const role = prompt("Введите роль (admin, moderator, user):");
+
+            if (username && role) {
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                let user = users.find(u => u.username === username);
+                if (!user) {
+                    user = { username, role: 'user' }; // Если пользователя нет — создаем
+                    users.push(user);
+                } else {
+                    user.role = role; // Изменяем роль
+                }
+                localStorage.setItem('users', JSON.stringify(users));
+                logAction(`Основатель присвоил пользователю ${username} роль ${role}`);
+                alert(`Роль для пользователя ${username} изменена на ${role}.`);
+            }
+        }
+
+        // Выход из системы
         function logout() {
-            localStorage.removeItem('userRole'); // Удаляем информацию о пользователе
-            window.location.href = 'login.html'; // Перенаправляем на страницу входа
+            localStorage.removeItem('userRole');
+            window.location.href = 'login.html';
         }
     </script>
 </head>
-<body>
+<body class="owner-panel">
 
     <header>
         <h1>Панель основателя</h1>
-        <button onclick="editSiteContent()">Редактировать контент сайта</button>
-        <button onclick="blockUser()">Заблокировать пользователя</button>
-        <button onclick="showBlockedUsers()">Показать заблокированных пользователей</button>
-        <button onclick="assignRole()">Присвоить роль пользователю</button>
-        <button onclick="showUsers()">Показать всех пользователей</button>
-        <button onclick="viewLogs()">Просмотреть журнал действий</button>
-        <button onclick="logout()">Выйти</button>
+        <nav>
+            <button onclick="editSiteContent()">Редактировать контент</button>
+            <button onclick="blockUser()">Заблокировать пользователя</button>
+            <button onclick="showBlockedUsers()">Показать заблокированных</button>
+            <button onclick="assignRole()">Присвоить роль</button>
+            <button onclick="viewLogs()">Просмотреть журнал</button>
+            <button onclick="logout()">Выйти</button>
+        </nav>
     </header>
 
-    <section id="siteContent">
-        <h2 id="siteTitle">Добро пожаловать на сайт!</h2>
-        <p id="siteDescription">Это основной сайт, доступный всем пользователям.</p>
-    </section>
+    <main>
+        <section id="siteContent">
+            <h2 id="siteTitle">Добро пожаловать на сайт!</h2>
+            <p id="siteDescription">Это основной сайт, доступный всем пользователям.</p>
+        </section>
+    </main>
 
     <footer>
         <p>© 2025 Все права защищены</p>
@@ -176,4 +143,3 @@
 
 </body>
 </html>
-
