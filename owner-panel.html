@@ -14,6 +14,7 @@
             }
 
             loadContent(); // Загружаем сохраненный контент сайта при открытии панели
+            loadLogs();   // Загружаем журнал действий
         };
 
         // Функция для редактирования текста сайта
@@ -31,6 +32,7 @@
 
             alert("Изменения сохранены!");
             loadContent(); // Загружаем обновленный контент
+            logAction('Редактирование контента сайта'); // Записываем действие в журнал
         }
 
         // Функция для загрузки контента с сайта
@@ -53,7 +55,7 @@
                 blockedUsers.push({ username, blockUntil });
                 localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers)); // Сохраняем список заблокированных пользователей
 
-                logAction(`Основатель заблокировал пользователя ${username} на ${duration} минут`);
+                logAction(`Основатель заблокировал пользователя ${username} на ${duration} минут`); // Записываем действие в журнал
                 alert(`Пользователь ${username} заблокирован на ${duration} минут.`);
             }
         }
@@ -116,7 +118,7 @@
                 }
 
                 localStorage.setItem('users', JSON.stringify(users)); // Сохраняем список пользователей
-                logAction(`Основатель присвоил пользователю ${username} роль ${role}`);
+                logAction(`Основатель присвоил пользователю ${username} роль ${role}`); // Записываем действие в журнал
                 alert(`Роль для пользователя ${username} изменена на ${role}.`);
             }
         }
@@ -131,6 +133,23 @@
                 alert("Нет пользователей.");
             }
         }
+
+        // Функция для отображения журнала действий
+        function viewLogs() {
+            const logs = JSON.parse(localStorage.getItem('logs')) || [];
+
+            if (logs.length > 0) {
+                alert(`Журнал действий:\n${logs.map(log => `[${log.date}] ${log.user}: ${log.action}`).join('\n')}`);
+            } else {
+                alert("Журнал пуст.");
+            }
+        }
+
+        // Функция для выхода из системы
+        function logout() {
+            localStorage.removeItem('userRole'); // Удаляем информацию о пользователе
+            window.location.href = 'login.html'; // Перенаправляем на страницу входа
+        }
     </script>
 </head>
 <body>
@@ -142,6 +161,7 @@
         <button onclick="showBlockedUsers()">Показать заблокированных пользователей</button>
         <button onclick="assignRole()">Присвоить роль пользователю</button>
         <button onclick="showUsers()">Показать всех пользователей</button>
+        <button onclick="viewLogs()">Просмотреть журнал действий</button>
         <button onclick="logout()">Выйти</button>
     </header>
 
@@ -156,3 +176,4 @@
 
 </body>
 </html>
+
