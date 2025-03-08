@@ -74,8 +74,10 @@
             
             if (userRole === 'user') {
                 loadUserProfile(); // Если пользователь — обычный пользователь, загружаем его профиль
+            } else if (userRole === 'owner') {
+                loadAdminOrOwnerProfile(); // Если основатель — позволяем искать чужие профили
             } else {
-                loadAdminOrOwnerProfile(); // Если администратор или основатель — позволяем искать чужие профили
+                window.location.href = 'login.html'; // Если не основной пользователь, не admin или owner, перенаправляем на вход
             }
         };
 
@@ -95,15 +97,18 @@
         // Загрузка профиля администраторов и основателей
         function loadAdminOrOwnerProfile() {
             const userRole = localStorage.getItem('userRole');
-            const username = prompt("Введите имя пользователя для просмотра профиля:");
+            if (userRole !== 'owner') {
+                // Для основателя показываем возможность редактировать чужие профили
+                const username = prompt("Введите имя пользователя для просмотра профиля:");
 
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const user = users.find(u => u.username === username);
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                const user = users.find(u => u.username === username);
 
-            if (user) {
-                alert(`Профиль пользователя:\nИмя: ${user.username}\nEmail: ${user.email}\nТелефон: ${user.phone}`);
-            } else {
-                alert('Пользователь не найден!');
+                if (user) {
+                    alert(`Профиль пользователя:\nИмя: ${user.username}\nEmail: ${user.email}\nТелефон: ${user.phone}`);
+                } else {
+                    alert('Пользователь не найден!');
+                }
             }
         }
 
