@@ -14,7 +14,14 @@
             }
             loadContent(); // Загружаем контент
             loadLogs(); // Загружаем журнал
+            showSecretPanel(); // Проверка отображения секретной панели
         };
+
+        // Функция для отображения секретной панели
+        function showSecretPanel() {
+            const secretPanel = document.getElementById('secretPanel');
+            secretPanel.style.display = 'block'; // Показать панель только основателю
+        }
 
         // Редактирование контента
         function editSiteContent() {
@@ -134,7 +141,7 @@
             <button onclick="assignRole()">Присвоить роль</button>
             <button onclick="viewLogs()">Просмотреть журнал</button>
             <button onclick="logout()">Выйти</button>
-            <button onclick="goToUserPanel()">Перейти в панель пользователя</button> <!-- Кнопка для перехода в панель пользователя -->
+            <button onclick="goToUserPanel()">Перейти в панель пользователя</button>
         </nav>
     </header>
 
@@ -142,6 +149,13 @@
         <section id="siteContent">
             <h2 id="siteTitle">Добро пожаловать на сайт!</h2>
             <p id="siteDescription">Это основной сайт, доступный всем пользователям.</p>
+        </section>
+
+        <!-- Секретная панель -->
+        <section id="secretPanel" class="secret-panel" style="display: none;">
+            <h2>Секретные операции</h2>
+            <p>Здесь отображаются операции, доступные только основателю.</p>
+            <button onclick="alert('Выполнена секретная операция!')">Секретная операция</button>
         </section>
     </main>
 
