@@ -3,31 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Панель Основателя</title>
+    <title>Панель основателя</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="owner-script.js" defer></script>
+    <script>
+        // Логика для проверки роли пользователя при загрузке страницы
+        window.onload = function() {
+            const userRole = localStorage.getItem('userRole');
+            if (userRole !== 'owner') {
+                window.location.href = 'login.html'; // Перенаправление, если пользователь не основатель
+            }
+        };
+
+        // Функция для редактирования сайта
+        function editSiteContent() {
+            const newContent = prompt("Введите новый контент для сайта:");
+            if (newContent) {
+                document.getElementById('siteContent').innerText = newContent;
+                logAction("Основатель отредактировал сайт");
+            }
+        }
+
+        // Функция для блокировки пользователя
+        function blockUser() {
+            const username = prompt("Введите имя пользователя для блокировки:");
+            const duration = prompt("Введите длительность блокировки в минутах:");
+
+            if (username && duration) {
+                const blockUntil = new Date().getTime() + (duration * 60000); // Блокировка на определенное время
+                localStorage.setItem(username, blockUntil); // Сохраняем время блокировки в localStorage
+                logAction(`Основатель заблокировал пользователя ${username} на ${duration} минут`);
+                alert(`Пользователь ${username} заблокирован на ${duration} минут.`);
+            }
+        }
+
+        // Функция для изменения роли пользователя
+        function changeUserRole() {
+            const username = prompt("Введите имя пользователя для изменения роли:");
+            const newRole = prompt("Введите новую роль (admin, user, blocked):");
+
+            if (username && newRole) {
+                localStorage.setItem(username + '-role', newRole);
+                logAction(`Основатель изменил роль пользователя ${username} на ${newRole}`);
+                alert(`Роль пользователя ${username} изменена на ${newRole}`);
+            }
+        }
+
+        // Функция для вывода всех заблокированных пользователей
+        function showBlockedUsers() {
+            const blockedUsers = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                let key = localStorage.key(i);
+                if (key.includes('-role') && localStorage.getItem(key) === 'blocked') {
+                    blockedUsers.push(key.split('-')[0]);
+                }
+            }
+
+            if (blockedUsers.length > 0) {
+                alert(`Заблокированные пользователи: ${blockedUsers.join(', ')}`);
+            } else {
+                alert("Нет заблокированных пользователей.");
+            }
+        }
+
+        // Функция для логирования действий
+        function logAction(action) {
+            const date = new Date().toLocaleString();
+            const user = localStorage.getItem('userRole');
+            const logEntry = { date, user, action };
+
+            let logs = JSON.parse(localStorage.getItem('logs')) || [];
+            logs.push(logEntry);
+            localStorage.setItem('logs', JSON.stringify(logs));
+
+            // Выводим логи в консоль
+            console.log(logEntry);
+        }
+    </script>
 </head>
 <body>
 
-    <div class="sidebar">
-        <h2>Панель Основателя</h2>
-        <ul>
-            <li><a href="#home">Главная</a></li>
-            <li><a href="#users">Пользователи</a></li>
-            <li><a href="#admin-management">Управление администраторами</a></li>
-            <li><a href="#logs">Журнал действий</a></li>
-            <li><a href="#security">Безопасность</a></li>
-            <li><a href="#reports">Отчеты</a></li>
-            <li><a href="#" onclick="logout()">Выход</a></li>
-        </ul>
-    </div>
+    <header>
+        <h1>Панель основателя</h1>
+        <button onclick="editSiteContent()">Редактировать сайт</button>
+        <button onclick="blockUser()">Заблокировать пользователя</button>
+        <button onclick="changeUserRole()">Изменить роль пользователя</button>
+        <button onclick="showBlockedUsers()">Показать заблокированных пользователей</button>
+    </header>
 
-    <div class="main-content">
-        <section id="home">
-            <h1>Добро пожаловать в панель основателя!</h1>
-        </section>
-        <!-- Дополнительные разделы -->
-    </div>
+    <section id="siteContent">
+        <h2>Контент сайта</h2>
+        <p>Здесь будет основной контент сайта.</p>
+    </section>
+
+    <footer>
+        <button onclick="window.location.href='index.html'">На главную</button>
+        <button onclick="window.location.href='login.html'">Выйти</button>
+    </footer>
 
 </body>
 </html>
