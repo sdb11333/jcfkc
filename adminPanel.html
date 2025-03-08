@@ -5,6 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Панель администратора</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Стили для чата */
+        .chat-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-box {
+            display: flex;
+            align-items: center;
+            max-width: 500px;
+            width: 100%;
+            background-color: #444;
+            padding: 5px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background-color: #555;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .chat-button {
+            padding: 10px 15px;
+            background-color: #888;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .chat-button:hover {
+            background-color: #777;
+        }
+
+        .messages {
+            margin-bottom: 60px;
+            padding: 20px;
+        }
+
+        /* Стили для основного контента */
+        main {
+            padding-bottom: 70px; /* Для того чтобы чат не перекрывал основной контент */
+        }
+    </style>
 </head>
 <body>
 
@@ -43,9 +102,43 @@
         <button onclick="window.location.href='login.html'">Выйти</button>
     </footer>
 
+    <!-- Чат внизу страницы -->
+    <div class="chat-container">
+        <div class="chat-box">
+            <input type="text" id="messageInput" class="chat-input" placeholder="Введите сообщение">
+            <button class="chat-button" onclick="sendMessage()">Отправить</button>
+        </div>
+    </div>
+
     <script>
+        // Массив сообщений
+        let messages = [];
+
+        // Функция для отправки сообщений
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            if (message) {
+                messages.push({ text: message, user: 'Вы' });
+                messageInput.value = '';
+                updateChat();
+            }
+        }
+
+        // Функция для отображения сообщений в чате
+        function updateChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.innerHTML = ''; // Очищаем чат
+            messages.forEach(msg => {
+                const msgElement = document.createElement('div');
+                msgElement.classList.add('message');
+                msgElement.innerHTML = `<strong>${msg.user}:</strong> ${msg.text}`;
+                chatContainer.appendChild(msgElement);
+            });
+        }
+
+        // Скачать отчет (пример)
         function downloadReport() {
-            // Для примера, просто выводим отчет в консоль
             const reportData = {
                 users: localStorage.length, // Количество пользователей
                 logs: JSON.parse(localStorage.getItem('logs') || '[]').length // Количество логов
@@ -57,4 +150,3 @@
 
 </body>
 </html>
-
