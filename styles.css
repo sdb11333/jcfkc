@@ -1,163 +1,59 @@
 /* Общие стили для всех страниц */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
+/* Заголовки */
 h1, h2 {
     color: #333;
 }
 
-h2 {
-    text-align: center;
-    margin-top: 20px;
-}
-
-form {
-    width: 300px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-form div {
-    margin-bottom: 15px;
-}
-
-form label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-form input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-/* Дополнительные стили для страницы входа */
-body.login-page {
-    background-color: #f1f1f1; /* Установим фон для страницы входа */
-}
-
-/* Панель администратора */
-.admin-panel {
-    background-color: #333;
-    color: white;
-    padding: 20px;
-}
-
-/* Панель основателя */
-.owner-panel {
-    background-color: #e0f7fa;
-    padding: 20px;
-}
-
-header {
-    background-color: #00796b;
-    color: white;
+/* Общие стили для всех панелей */
+header, footer {
     padding: 15px;
+    color: white;
     text-align: center;
 }
 
-header h1 {
-    margin: 0;
+/* Панель основателя (owner-panel) */
+.owner-panel {
+    background-color: #e0f7fa; /* Легкая светлая палитра */
+    color: #00796b;
+    padding: 30px;
+    text-align: center;
 }
 
-/* Стили для навигации в панели основателя */
-nav button {
-    background-color: #00796b;
+/* Уникальный стиль для панели администратора */
+.admin-panel {
+    background-color: #333; /* Темная цветовая схема */
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
+
+.admin-panel button {
+    background-color: #3498db;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 25px;
+    font-size: 18px;
+    border-radius: 5px;
     margin: 5px;
     cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
 }
 
-nav button:hover {
-    background-color: #004d40;
+.admin-panel button:hover {
+    background-color: #2980b9;
 }
 
-/* Основной контент */
-main {
-    padding: 20px;
-    text-align: center;
+/* Панель входа (login-page) */
+body.login-page {
+    background-color: #f1f1f1;
 }
 
-/* Стили для футера */
-footer {
-    text-align: center;
-    padding: 10px;
-    background-color: #00796b;
-    color: white;
-}
-
-/* Стили для контента */
-#siteContent {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-#siteContent h2 {
-    font-size: 24px;
-}
-
-#siteContent p {
-    font-size: 18px;
-}
-
-/* Стили для панели навигации */
-header, footer {
-    background-color: #333;
-    color: white;
-    padding: 10px;
-}
-
-header h1, footer p {
-    text-align: center;
-}
-
-nav ul {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-}
-
-nav ul li {
-    margin: 0 15px;
-}
-
-nav ul li a {
-    text-decoration: none;
-    color: white;
-}
-
-/* Стили для формы входа */
 .login-container {
     display: flex;
     flex-direction: column;
@@ -166,14 +62,55 @@ nav ul li a {
 }
 
 .login-container form {
-    display: flex;
-    flex-direction: column;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .login-container input {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    padding: 12px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    width: 100%;
     padding: 10px;
-    width: 250px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* Стили для панели навигации в основной панели */
+nav {
+    background-color: #00796b;
+    padding: 10px;
+    text-align: center;
+}
+
+nav button {
+    background-color: #00796b;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 18px;
+    border-radius: 5px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+nav button:hover {
+    background-color: #004d40;
 }
 
 /* Стили для боковой панели */
@@ -212,7 +149,7 @@ nav ul li a {
     padding: 20px;
 }
 
-/* Логирование действий */
+/* Журнал действий */
 #log-table {
     width: 100%;
     border-collapse: collapse;
@@ -220,7 +157,7 @@ nav ul li a {
 }
 
 #log-table th, #log-table td {
-    padding: 8px;
+    padding: 10px;
     border: 1px solid #ddd;
     text-align: left;
 }
@@ -233,11 +170,103 @@ nav ul li a {
     background-color: #fff;
 }
 
-/* Общие кнопки */
-button {
-    padding: 10px 20px;
+/* Для панели статистики основателя */
+.owner-statistics {
+    background-color: #00796b;
+    color: white;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.owner-statistics h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.owner-statistics table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.owner-statistics th, .owner-statistics td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.owner-statistics th {
+    background-color: #f2f2f2;
+}
+
+/* Стили для секретной панели */
+#secretPanel {
+    background-color: #f1f1f1;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    margin-top: 30px;
+}
+
+#secretPanel input {
+    padding: 12px;
+    width: 250px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#secretPanel button {
+    width: 100%;
+    padding: 10px;
     background-color: #3498db;
     color: white;
     border: none;
     border-radius: 5px;
+    cursor: pointer;
+}
+
+#secretPanel button:hover {
+    background-color: #2980b9;
+}
+
+/* Уникальные стили для статистики */
+.owner-stats {
+    background-color: #f4f4f9;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.owner-stats h3 {
+    font-size: 24px;
+    text-align: center;
+    color: #00796b;
+}
+
+.owner-stats .stats-table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.owner-stats .stats-table th, .owner-stats .stats-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.owner-stats .stats-table th {
+    background-color: #f2f2f2;
+}
+
+/* Стили для страницы с ошибкой */
+.error-page {
+    background-color: #ffebee;
+    color: #e57373;
+    padding: 30px;
+    text-align: center;
+    font-size: 20px;
+    border-radius: 8px;
+    margin-top: 50px;
 }
