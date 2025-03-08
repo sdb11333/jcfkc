@@ -72,7 +72,8 @@
         function logAction(action) {
             const date = new Date().toLocaleString();
             const user = localStorage.getItem('userRole');
-            const logEntry = { date, user, action };
+            const username = localStorage.getItem('currentUsername'); // Логинимся как пользователь
+            const logEntry = { date, user: username, action };
 
             let logs = JSON.parse(localStorage.getItem('logs')) || [];
             logs.push(logEntry);
@@ -112,6 +113,7 @@
         // Выход из системы
         function logout() {
             localStorage.removeItem('userRole');
+            localStorage.removeItem('currentUsername');
             window.location.href = 'login.html';
         }
     </script>
