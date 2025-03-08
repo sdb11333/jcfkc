@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление администраторами</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="admin-script.js" defer></script>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Админ Панель</h2>
+        <ul>
+            <li><a href="admin-panel.html">Главная</a></li>
+            <li><a href="users.html">Пользователи</a></li>
+            <li><a href="admin-management.html">Управление администраторами</a></li>
+            <li><a href="logs.html">Журнал действий</a></li>
+            <li><a href="security.html">Безопасность</a></li>
+            <li><a href="reports.html">Отчеты</a></li>
+            <li><a href="#" onclick="logout()">Выход</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <section id="admin-management">
+            <h1>Управление администраторами</h1>
+            <button onclick="addAdmin()">Добавить администратора</button>
+            <table id="admin-table">
+                <tr>
+                    <th>Имя</th>
+                    <th>Роль</th>
+                    <th>Действие</th>
+                </tr>
+                <!-- Данные администраторов будут добавляться сюда -->
+            </table>
+        </section>
+    </div>
+
+</body>
+</html>
