@@ -5,6 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Главная страница</title>
     <link rel="stylesheet" href="styles.css">
+    <script>
+        // Проверка роли пользователя при загрузке страницы
+        window.onload = function() {
+            const userRole = localStorage.getItem('userRole');
+            const loginButton = document.getElementById('loginButton');
+            const logoutButton = document.getElementById('logoutButton');
+
+            // Если пользователь авторизован, показываем кнопку "Выйти" и скрываем "Войти"
+            if (userRole) {
+                loginButton.style.display = 'none';  // Скрыть кнопку "Войти"
+                logoutButton.style.display = 'block'; // Показать кнопку "Выйти"
+            } else {
+                loginButton.style.display = 'block'; // Показать кнопку "Войти"
+                logoutButton.style.display = 'none'; // Скрыть кнопку "Выйти"
+            }
+        };
+
+        // Логика для выхода из системы
+        function logout() {
+            localStorage.removeItem('userRole'); // Удаляем роль пользователя из localStorage
+            window.location.href = 'index.html'; // Перенаправляем на главную страницу
+        }
+    </script>
 </head>
 <body>
 
@@ -13,7 +36,10 @@
         <nav>
             <ul>
                 <li><a href="index.html">Главная</a></li>
-                <li><a href="login.html">Войти</a></li>
+                <!-- Кнопка входа -->
+                <li><a id="loginButton" href="login.html">Войти</a></li>
+                <!-- Кнопка выхода (скрыта по умолчанию) -->
+                <li><button id="logoutButton" style="display: none;" onclick="logout()">Выйти</button></li>
             </ul>
         </nav>
     </header>
@@ -29,3 +55,4 @@
 
 </body>
 </html>
+
