@@ -34,6 +34,7 @@
             if (user) {
                 // Сохраняем роль пользователя в localStorage
                 localStorage.setItem('userRole', user.role);
+                localStorage.setItem('lastLogin', new Date().toLocaleString()); // Сохраняем последний вход
                 logAction(`${user.role.charAt(0).toUpperCase() + user.role.slice(1)} вошел в систему`); // Логируем действие
 
                 // Перенаправляем в соответствующую панель
@@ -46,6 +47,7 @@
                 }
             } else {
                 alert('Неверный логин или пароль');
+                logAction('Неудачная попытка входа');
             }
         });
 
@@ -86,7 +88,57 @@
         // Загружаем все логи при инициализации, если на странице есть элемент с id="log-table"
         window.onload = function() {
             loadLogs();
+
+            // Автоматически показываем последний вход в систему
+            const lastLogin = localStorage.getItem('lastLogin');
+            if (lastLogin) {
+                document.getElementById('lastLogin').innerText = `Последний вход: ${lastLogin}`;
+            }
+
+            // Если текущий пользователь - основатель, показываем скрытые функции
+            const userRole = localStorage.getItem('userRole');
+            if (userRole === 'owner') {
+                showOwnerFeatures();
+            }
         };
+
+        // Секретная панель для основателя
+        function showOwnerFeatures() {
+            document.getElementById('secretPanel').style.display = 'block';
+            document.getElementById('secretCodeForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const code = document.getElementById('secretCode').value;
+                if (code === '12345') {
+                    alert('Доступ к секретной информации предоставлен!');
+                    logAction('Доступ к секретной панели открыт');
+                } else {
+                    alert('Неверный секретный код');
+                }
+            });
+        }
+
+        // Функция для восстановления пароля
+        function restorePassword() {
+            const username = prompt("Введите имя пользователя для восстановления пароля:");
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.username === username);
+
+            if (user) {
+                alert(`Ваш пароль: ${user.password}`);
+                logAction(`Восстановление пароля для пользователя ${username}`);
+            } else {
+                alert('Пользователь не найден');
+                logAction(`Попытка восстановления пароля для несуществующего пользователя: ${username}`);
+            }
+        }
+
+        // Функция для выхода
+        function logout() {
+            localStorage.removeItem('userRole');
+            window.location.href = 'login.html';
+        }
+
     </script>
 </head>
 <body>
@@ -105,6 +157,34 @@
 
         <button type="submit">Войти</button>
     </form>
+
+    <p id="lastLogin"></p> <!-- Отображаем последний вход -->
+
+    <p><button onclick="restorePassword()">Восстановить пароль</button></p> <!-- Кнопка для восстановления пароля -->
+
+    <h3>Журнал действий:</h3>
+    <table id="log-table" border="1">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Пользователь</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Логи действий будут добавляться сюда -->
+        </tbody>
+    </table>
+
+    <!-- Секретная панель для основателя -->
+    <div id="secretPanel" style="display:none;">
+        <h3>Секретная панель</h3>
+        <form id="secretCodeForm">
+            <label for="secretCode">Введите секретный код:</label>
+            <input type="text" id="secretCode" required>
+            <button type="submit">Подтвердить</button>
+        </form>
+    </div>
 
 </body>
 </html>
