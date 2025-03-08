@@ -68,10 +68,19 @@
     <script>
         window.onload = function() {
             const userRole = localStorage.getItem('userRole');
-            if (userRole !== 'user') {
-                window.location.href = 'login.html'; // Если роль не user, перенаправляем на страницу входа
+            if (!userRole) {
+                window.location.href = 'login.html'; // Если пользователь не авторизован, перенаправляем на страницу входа
             }
-            // Получаем данные пользователя из localStorage
+            
+            if (userRole === 'user') {
+                loadUserProfile(); // Если пользователь — обычный пользователь, загружаем его профиль
+            } else {
+                loadAdminOrOwnerProfile(); // Если администратор или основатель — позволяем искать чужие профили
+            }
+        };
+
+        // Загрузка профиля обычного пользователя
+        function loadUserProfile() {
             const userData = JSON.parse(localStorage.getItem('userData'));
             if (userData) {
                 document.getElementById('username').textContent = userData.username;
@@ -81,7 +90,22 @@
                 document.getElementById('editEmail').value = userData.email;
                 document.getElementById('editPhone').value = userData.phone;
             }
-        };
+        }
+
+        // Загрузка профиля администраторов и основателей
+        function loadAdminOrOwnerProfile() {
+            const userRole = localStorage.getItem('userRole');
+            const username = prompt("Введите имя пользователя для просмотра профиля:");
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.username === username);
+
+            if (user) {
+                alert(`Профиль пользователя:\nИмя: ${user.username}\nEmail: ${user.email}\nТелефон: ${user.phone}`);
+            } else {
+                alert('Пользователь не найден!');
+            }
+        }
 
         function logout() {
             localStorage.removeItem('userRole');
@@ -137,7 +161,7 @@
                 <button onclick="saveProfile()">Сохранить изменения</button>
             </div>
         </div>
-        
+
         <button onclick="window.location.href='index.html'">На главную</button>
     </main>
 
