@@ -17,59 +17,168 @@
         .main-content { margin-left: 260px; padding: 40px; width: 100%; }
         section { padding: 30px; background: white; margin-bottom: 30px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); }
         .btn { padding: 10px 20px; border: none; background: #3498db; color: white; border-radius: 5px; cursor: pointer; }
+        .hidden { display: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        table, th, td { border: 1px solid #ddd; }
+        th, td { padding: 10px; text-align: left; }
+        th { background: #3498db; color: white; }
     </style>
 </head>
 <body>
+    <script>
+        const userRole = prompt("Введите вашу роль (user, admin, owner):");
+    </script>
+    
     <div class="sidebar">
         <h2>Админ Панель</h2>
         <ul>
             <li><a href="#home"><i class="fas fa-home"></i> Главная</a></li>
-            <li><a href="#users"><i class="fas fa-users"></i> Пользователи</a></li>
-            <li><a href="#logs"><i class="fas fa-list"></i> Журнал действий</a></li>
-            <li><a href="#security"><i class="fas fa-shield-alt"></i> Безопасность</a></li>
+            <li class="admin-only"><a href="#users"><i class="fas fa-users"></i> Пользователи</a></li>
+            <li class="admin-only"><a href="#logs"><i class="fas fa-list"></i> Журнал действий</a></li>
+            <li class="admin-only"><a href="#security"><i class="fas fa-shield-alt"></i> Безопасность</a></li>
+            <li class="admin-only"><a href="#settings"><i class="fas fa-cogs"></i> Настройки</a></li>
+            <li class="owner-only"><a href="#admin-management"><i class="fas fa-cogs"></i> Управление администраторами</a></li>
             <li><a href="#reports"><i class="fas fa-chart-line"></i> Отчеты</a></li>
             <li><a href="#logout"><i class="fas fa-sign-out-alt"></i> Выход</a></li>
         </ul>
     </div>
+    
     <div class="main-content">
         <section id="home">
-            <h1>Главная</h1>
-            <p>Добро пожаловать!</p>
+            <h1>Добро пожаловать в админ панель!</h1>
+            <p>Здесь вы можете управлять всеми аспектами сайта.</p>
         </section>
-        <section id="users">
-            <h1>Пользователи</h1>
-            <button class="btn">Добавить пользователя</button>
-            <ul id="userList"></ul>
+        
+        <section id="users" class="admin-only">
+            <h1>Управление пользователями</h1>
+            <p>Здесь вы можете добавлять, удалять или редактировать пользователей.</p>
+            <button class="btn" onclick="addUser()">Добавить пользователя</button>
+            <button class="btn" onclick="deleteUser()">Удалить пользователя</button>
+            <button class="btn" onclick="editUser()">Редактировать пользователя</button>
         </section>
-        <section id="logs">
+
+        <section id="logs" class="admin-only">
             <h1>Журнал действий</h1>
             <p>История изменений на сайте.</p>
+            <table id="log-table">
+                <tr>
+                    <th>Дата</th>
+                    <th>Пользователь</th>
+                    <th>Действие</th>
+                </tr>
+            </table>
         </section>
-        <section id="security">
+        
+        <section id="security" class="admin-only">
             <h1>Безопасность</h1>
-            <p>Настройки безопасности и 2FA.</p>
+            <p>Настройки безопасности и двухфакторная аутентификация (2FA).</p>
+            <button class="btn" onclick="enable2FA()">Включить двухфакторную аутентификацию</button>
+            <p id="2fa-status">2FA: Отключено</p>
         </section>
+
+        <section id="settings" class="admin-only">
+            <h1>Настройки сайта</h1>
+            <p>Измените настройки сайта, включая темы и другие параметры.</p>
+            <button class="btn" onclick="changeSiteSettings()">Изменить настройки</button>
+        </section>
+
+        <section id="admin-management" class="owner-only">
+            <h1>Управление администраторами</h1>
+            <p>Добавление, удаление или изменение прав администраторов.</p>
+            <button class="btn" onclick="manageAdmins()">Управлять администраторами</button>
+        </section>
+
         <section id="reports">
             <h1>Отчеты</h1>
-            <p>Финансовые и аналитические данные.</p>
+            <p>Просмотр статистики, финансовых отчетов и аналитики.</p>
+            <button class="btn" onclick="viewReports()">Просмотреть отчеты</button>
         </section>
+
         <section id="logout">
             <h1>Выход</h1>
-            <button class="btn">Выйти</button>
+            <button class="btn" onclick="logout()">Выйти</button>
         </section>
     </div>
+    
     <script>
-        function addUser() {
-            let name = prompt("Введите имя пользователя:");
-            let email = prompt("Введите email пользователя:");
-            if (name && email) {
-                let list = document.getElementById("userList");
-                let li = document.createElement("li");
-                li.innerHTML = `${name} - ${email} <button onclick="this.parentElement.remove()">❌</button>`;
-                list.appendChild(li);
+        function logAction(user, action) {
+            const date = new Date().toLocaleString();
+            const logEntry = `${date} | ${user} | ${action}\n`;
+            localStorage.setItem("logData", (localStorage.getItem("logData") || "") + logEntry);
+            
+            const table = document.getElementById("log-table");
+            const row = table.insertRow(-1);
+            row.insertCell(0).innerText = date;
+            row.insertCell(1).innerText = user;
+            row.insertCell(2).innerText = action;
+        }
+
+        function loadLogs() {
+            const table = document.getElementById("log-table");
+            const logs = (localStorage.getItem("logData") || "").split("\n");
+            logs.forEach(log => {
+                if (log) {
+                    const [date, user, action] = log.split(" | ");
+                    const row = table.insertRow(-1);
+                    row.insertCell(0).innerText = date;
+                    row.insertCell(1).innerText = user;
+                    row.insertCell(2).innerText = action;
+                }
+            });
+        }
+        
+        function enable2FA() {
+            document.getElementById("2fa-status").innerText = "2FA: Включено";
+            logAction(userRole, "Включил 2FA");
+            alert("Двухфакторная аутентификация включена!");
+        }
+
+        function logout() {
+            logAction(userRole, "Вышел из системы");
+            alert("Вы вышли из системы!");
+        }
+
+        function changeSiteSettings() {
+            alert("Настройки сайта были изменены!");
+            logAction(userRole, "Изменил настройки сайта");
+        }
+
+        function viewReports() {
+            alert("Просмотр отчетов.");
+            logAction(userRole, "Просмотрел отчеты");
+        }
+
+        function applyRolePermissions() {
+            if (userRole === "user") {
+                document.querySelectorAll(".admin-only").forEach(el => el.classList.add("hidden"));
+            }
+            if (userRole !== "owner") {
+                document.querySelectorAll(".owner-only").forEach(el => el.classList.add("hidden"));
             }
         }
-        document.querySelector(".btn").addEventListener("click", addUser);
+
+        function addUser() {
+            alert("Добавление нового пользователя");
+            logAction(userRole, "Добавил нового пользователя");
+        }
+
+        function deleteUser() {
+            alert("Удаление пользователя");
+            logAction(userRole, "Удалил пользователя");
+        }
+
+        function editUser() {
+            alert("Редактирование данных пользователя");
+            logAction(userRole, "Редактировал пользователя");
+        }
+
+        function manageAdmins() {
+            alert("Управление администраторами");
+            logAction(userRole, "Управлял администраторами");
+        }
+
+        applyRolePermissions();
+        loadLogs();
     </script>
 </body>
 </html>
