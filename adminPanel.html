@@ -59,6 +59,20 @@
             padding: 20px;
         }
 
+        .message {
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .admin {
+            color: red;
+        }
+
+        .owner {
+            color: blue;
+        }
+
         /* Стили для основного контента */
         main {
             padding-bottom: 70px; /* Для того чтобы чат не перекрывал основной контент */
@@ -110,16 +124,23 @@
         </div>
     </div>
 
+    <!-- Сообщения -->
+    <div id="chatContainer" class="messages"></div>
+
     <script>
         // Массив сообщений
         let messages = [];
+
+        // Получаем роль пользователя
+        const userRole = localStorage.getItem('userRole');
 
         // Функция для отправки сообщений
         function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value.trim();
             if (message) {
-                messages.push({ text: message, user: 'Вы' });
+                // Добавляем новое сообщение в массив с учетом роли
+                messages.push({ text: message, user: userRole });
                 messageInput.value = '';
                 updateChat();
             }
@@ -129,10 +150,26 @@
         function updateChat() {
             const chatContainer = document.getElementById('chatContainer');
             chatContainer.innerHTML = ''; // Очищаем чат
+
+            // Если пользователь не авторизован, не показываем сообщения
+            if (!userRole) {
+                chatContainer.innerHTML = "<p>Вы не авторизованы для просмотра сообщений.</p>";
+                return;
+            }
+
+            // Отображаем все сообщения с учетом роли
             messages.forEach(msg => {
                 const msgElement = document.createElement('div');
                 msgElement.classList.add('message');
-                msgElement.innerHTML = `<strong>${msg.user}:</strong> ${msg.text}`;
+                
+                // Определяем стиль в зависимости от роли
+                if (msg.user === 'admin') {
+                    msgElement.classList.add('admin'); // Красный цвет для администратора
+                } else if (msg.user === 'owner') {
+                    msgElement.classList.add('owner'); // Синий цвет для основателя
+                }
+
+                msgElement.innerHTML = `<strong>${msg.user === 'admin' ? 'Администратор' : msg.user === 'owner' ? 'Основатель' : 'Неизвестный'}:</strong> ${msg.text}`;
                 chatContainer.appendChild(msgElement);
             });
         }
@@ -146,6 +183,11 @@
             console.log('Отчет: ', reportData);
             alert("Отчет скачан (данные в консоли).");
         }
+
+        // При загрузке страницы обновляем чат
+        window.onload = function() {
+            updateChat();
+        };
     </script>
 
 </body>
