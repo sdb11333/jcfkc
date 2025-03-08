@@ -116,6 +116,11 @@
             localStorage.removeItem('currentUsername');
             window.location.href = 'login.html';
         }
+
+        // Переход в панель пользователя
+        function goToUserPanel() {
+            window.location.href = 'userPanel.html'; // Перенаправление на панель пользователя
+        }
     </script>
 </head>
 <body class="owner-panel">
@@ -129,6 +134,7 @@
             <button onclick="assignRole()">Присвоить роль</button>
             <button onclick="viewLogs()">Просмотреть журнал</button>
             <button onclick="logout()">Выйти</button>
+            <button onclick="goToUserPanel()">Перейти в панель пользователя</button> <!-- Кнопка для перехода в панель пользователя -->
         </nav>
     </header>
 
