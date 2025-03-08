@@ -3,23 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход в панель</title>
+    <title>Главная страница</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
 </head>
 <body>
 
-    <div class="login-container" id="loginContainer">
-        <h2>Вход в админ панель</h2>
-        <form id="loginForm">
-            <label for="username">Логин:</label>
-            <input type="text" id="username" required>
-            <label for="password">Пароль:</label>
-            <input type="password" id="password" required>
-            <button type="submit">Войти</button>
-        </form>
-    </div>
+    <header>
+        <h1>Добро пожаловать на сайт!</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="login.html">Войти</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="content">
+        <h2>О сайте</h2>
+        <p>Это основной сайт, доступный всем пользователям.</p>
+    </section>
+
+    <footer>
+        <p>© 2025 Все права защищены</p>
+    </footer>
 
 </body>
 </html>
-
