@@ -61,23 +61,63 @@
 
         .message {
             margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .admin {
+            color: red;
+        }
+
+        .owner {
+            color: blue;
         }
 
         /* Стили для основного контента */
         main {
             padding-bottom: 70px; /* Для того чтобы чат не перекрывал основной контент */
         }
+
+        .chat-message-controls {
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .delete-button {
+            background-color: red;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .block-button {
+            background-color: orange;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
     <script>
         // Массив сообщений
         let messages = [];
-
+        let blockedUsers = JSON.parse(localStorage.getItem('blockedUsers')) || [];
+        
         // Функция для отправки сообщений
         function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value.trim();
+            const userRole = localStorage.getItem('userRole');
+            const username = localStorage.getItem('currentUsername');
+            
             if (message) {
-                messages.push({ text: message, user: 'Вы' });
+                const messageData = {
+                    text: message,
+                    user: userRole === 'owner' ? 'Основатель' : userRole === 'admin' ? 'Администратор' : username,
+                    role: userRole
+                };
+                messages.push(messageData);
                 messageInput.value = '';
                 updateChat();
             }
@@ -87,12 +127,72 @@
         function updateChat() {
             const chatContainer = document.getElementById('chatContainer');
             chatContainer.innerHTML = ''; // Очищаем чат
-            messages.forEach(msg => {
+
+            const userRole = localStorage.getItem('userRole');
+            
+            // Если пользователь не авторизован, не показываем чат
+            if (!userRole) {
+                chatContainer.innerHTML = "<p>Вы не авторизованы для просмотра сообщений.</p>";
+                return;
+            }
+
+            // Отображаем все сообщения с учетом роли
+            messages.forEach((msg, index) => {
+                // Проверяем, заблокирован ли пользователь
+                if (blockedUsers.includes(msg.user)) return;
+
                 const msgElement = document.createElement('div');
                 msgElement.classList.add('message');
+
+                // Определяем стиль в зависимости от роли
+                if (msg.role === 'admin') {
+                    msgElement.classList.add('admin');
+                } else if (msg.role === 'owner') {
+                    msgElement.classList.add('owner');
+                }
+
                 msgElement.innerHTML = `<strong>${msg.user}:</strong> ${msg.text}`;
+                
+                if (userRole === 'owner') {
+                    const controls = document.createElement('div');
+                    controls.classList.add('chat-message-controls');
+                    const deleteButton = document.createElement('button');
+                    deleteButton.classList.add('delete-button');
+                    deleteButton.innerText = 'Удалить';
+                    deleteButton.onclick = function() {
+                        deleteMessage(index);
+                    };
+                    const blockButton = document.createElement('button');
+                    blockButton.classList.add('block-button');
+                    blockButton.innerText = 'Заблокировать';
+                    blockButton.onclick = function() {
+                        blockUserInChat(msg.user);
+                    };
+                    controls.appendChild(deleteButton);
+                    controls.appendChild(blockButton);
+                    msgElement.appendChild(controls);
+                }
+
                 chatContainer.appendChild(msgElement);
             });
+        }
+
+        // Удалить сообщение
+        function deleteMessage(index) {
+            messages.splice(index, 1);
+            updateChat();
+        }
+
+        // Заблокировать пользователя в чате
+        function blockUserInChat(username) {
+            if (!blockedUsers.includes(username)) {
+                blockedUsers.push(username);
+                localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
+                updateChat();
+                alert(`Пользователь ${username} заблокирован в чате.`);
+            } else {
+                alert(`Пользователь ${username} уже заблокирован.`);
+            }
         }
 
         // Проверка роли пользователя
@@ -137,33 +237,6 @@
             document.getElementById('siteDescription').innerText = savedDescription;
         }
 
-        // Блокировка пользователя
-        function blockUser() {
-            const username = prompt("Введите имя пользователя для блокировки:");
-            const duration = prompt("Введите длительность блокировки в минутах:");
-
-            if (username && duration) {
-                const blockUntil = new Date().getTime() + (duration * 60000);
-                const blockedUsers = JSON.parse(localStorage.getItem('blockedUsers')) || [];
-                blockedUsers.push({ username, blockUntil });
-                localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
-
-                logAction(`Заблокирован пользователь: ${username} на ${duration} минут`);
-                alert(`Пользователь ${username} заблокирован на ${duration} минут.`);
-            }
-        }
-
-        // Проверка заблокированных пользователей
-        function showBlockedUsers() {
-            const blockedUsers = JSON.parse(localStorage.getItem('blockedUsers')) || [];
-            const activeBlockedUsers = blockedUsers.filter(user => user.blockUntil > new Date().getTime());
-            if (activeBlockedUsers.length > 0) {
-                alert(`Заблокированные пользователи: ${activeBlockedUsers.map(user => user.username).join(', ')}`);
-            } else {
-                alert("Нет заблокированных пользователей.");
-            }
-        }
-
         // Логирование действий
         function logAction(action) {
             const date = new Date().toLocaleString();
@@ -174,36 +247,6 @@
             let logs = JSON.parse(localStorage.getItem('logs')) || [];
             logs.push(logEntry);
             localStorage.setItem('logs', JSON.stringify(logs));
-        }
-
-        // Вывод журнала
-        function viewLogs() {
-            const logs = JSON.parse(localStorage.getItem('logs')) || [];
-            if (logs.length > 0) {
-                alert(`Журнал действий:\n${logs.map(log => `[${log.date}] ${log.user}: ${log.action}`).join('\n')}`);
-            } else {
-                alert("Журнал пуст.");
-            }
-        }
-
-        // Присвоение роли
-        function assignRole() {
-            const username = prompt("Введите имя пользователя:");
-            const role = prompt("Введите роль (admin, moderator, user):");
-
-            if (username && role) {
-                const users = JSON.parse(localStorage.getItem('users')) || [];
-                let user = users.find(u => u.username === username);
-                if (!user) {
-                    user = { username, role: 'user' }; // Если пользователя нет — создаем
-                    users.push(user);
-                } else {
-                    user.role = role; // Изменяем роль
-                }
-                localStorage.setItem('users', JSON.stringify(users));
-                logAction(`Основатель присвоил пользователю ${username} роль ${role}`);
-                alert(`Роль для пользователя ${username} изменена на ${role}.`);
-            }
         }
 
         // Выход из системы
@@ -225,13 +268,10 @@
         <h1>Панель основателя</h1>
         <nav>
             <button onclick="editSiteContent()">Редактировать контент</button>
-            <button onclick="blockUser()">Заблокировать пользователя</button>
             <button onclick="showBlockedUsers()">Показать заблокированных</button>
-            <button onclick="assignRole()">Присвоить роль</button>
             <button onclick="viewLogs()">Просмотреть журнал</button>
             <button onclick="logout()">Выйти</button>
             <button onclick="goToUserPanel()">Перейти в панель пользователя</button>
-            <button onclick="window.location.href='secret-panel.html'">Секретная панель</button> <!-- Новая кнопка -->
         </nav>
     </header>
 
