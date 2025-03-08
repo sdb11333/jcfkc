@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель Основателя</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="owner-script.js" defer></script>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Панель Основателя</h2>
+        <ul>
+            <li><a href="#home"><i class="fas fa-home"></i> Главная</a></li>
+            <li><a href="#users"><i class="fas fa-users"></i> Пользователи</a></li>
+            <li><a href="#admin-management"><i class="fas fa-cogs"></i> Управление администраторами</a></li>
+            <li><a href="#logs"><i class="fas fa-list"></i> Журнал действий</a></li>
+            <li><a href="#security"><i class="fas fa-shield-alt"></i> Безопасность</a></li>
+            <li><a href="#reports"><i class="fas fa-chart-line"></i> Отчеты</a></li>
+            <li><a href="#logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Выход</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <section id="home">
+            <h1>Добро пожаловать в панель основателя!</h1>
+            <p>Вы можете управлять всеми пользователями и администраторами.</p>
+        </section>
+
+        <section id="admin-management">
+            <h1>Управление администраторами</h1>
+            <p>Здесь вы можете добавлять и удалять администраторов.</p>
+        </section>
+
+        <section id="logs">
+            <h1>Журнал действий</h1>
+            <p>История изменений на сайте.</p>
+            <table id="log-table">
+                <tr>
+                    <th>Дата</th>
+                    <th>Пользователь</th>
+                    <th>Действие</th>
+                </tr>
+            </table>
+        </section>
+
+        <section id="security">
+            <h1>Безопасность</h1>
+            <p>Настройки безопасности и 2FA.</p>
+            <button class="btn" onclick="enable2FA()">Включить двухфакторную аутентификацию</button>
+            <p id="2fa-status">2FA: Отключено</p>
+        </section>
+
+        <section id="reports">
+            <h1>Отчеты</h1>
+            <p>Финансовые и аналитические данные.</p>
+        </section>
+    </div>
+
+</body>
+</html>
