@@ -4,24 +4,140 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Панель пользователя</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #00796b;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #00796b;
+            color: white;
+        }
+        .profile-container {
+            background-color: white;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .profile-container h2 {
+            text-align: center;
+        }
+        .profile-info {
+            margin-bottom: 20px;
+        }
+        .profile-info label {
+            font-weight: bold;
+        }
+        .profile-info p {
+            margin: 5px 0;
+        }
+        .edit-form input {
+            padding: 8px;
+            margin: 5px 0;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
     <script>
         window.onload = function() {
             const userRole = localStorage.getItem('userRole');
             if (userRole !== 'user') {
                 window.location.href = 'login.html'; // Если роль не user, перенаправляем на страницу входа
             }
+            // Получаем данные пользователя из localStorage
+            const userData = JSON.parse(localStorage.getItem('userData'));
+            if (userData) {
+                document.getElementById('username').textContent = userData.username;
+                document.getElementById('email').textContent = userData.email;
+                document.getElementById('phone').textContent = userData.phone;
+                document.getElementById('editUsername').value = userData.username;
+                document.getElementById('editEmail').value = userData.email;
+                document.getElementById('editPhone').value = userData.phone;
+            }
         };
+
+        function logout() {
+            localStorage.removeItem('userRole');
+            window.location.href = 'login.html';
+        }
+
+        function saveProfile() {
+            const updatedData = {
+                username: document.getElementById('editUsername').value,
+                email: document.getElementById('editEmail').value,
+                phone: document.getElementById('editPhone').value,
+            };
+            localStorage.setItem('userData', JSON.stringify(updatedData));
+            alert('Профиль обновлен!');
+            // Обновление отображаемых данных
+            document.getElementById('username').textContent = updatedData.username;
+            document.getElementById('email').textContent = updatedData.email;
+            document.getElementById('phone').textContent = updatedData.phone;
+        }
     </script>
 </head>
 <body>
 
     <header>
         <h1>Панель пользователя</h1>
-        <button onclick="window.location.href='login.html'">Выйти</button>
+        <button onclick="logout()">Выйти</button>
     </header>
 
     <main>
-        <p>Добро пожаловать в панель пользователя!</p>
+        <div class="profile-container">
+            <h2>Профиль пользователя</h2>
+
+            <div class="profile-info">
+                <label>Имя пользователя:</label>
+                <p id="username">Загрузка...</p>
+            </div>
+
+            <div class="profile-info">
+                <label>Email:</label>
+                <p id="email">Загрузка...</p>
+            </div>
+
+            <div class="profile-info">
+                <label>Телефон:</label>
+                <p id="phone">Загрузка...</p>
+            </div>
+
+            <h3>Редактировать профиль</h3>
+            <div class="edit-form">
+                <input type="text" id="editUsername" placeholder="Имя пользователя">
+                <input type="email" id="editEmail" placeholder="Email">
+                <input type="text" id="editPhone" placeholder="Телефон">
+                <button onclick="saveProfile()">Сохранить изменения</button>
+            </div>
+        </div>
+        
         <button onclick="window.location.href='index.html'">На главную</button>
     </main>
 
