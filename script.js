@@ -9,11 +9,11 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     if (username === 'admin' && password === 'admin123') {
         localStorage.setItem('userRole', 'admin');
         logAction('Администратор вошел в систему'); // Логируем действие
-        window.location.href = 'admin-panel.html'; // Перенаправление на админ панель
+        window.location.href = 'adminPanel.html'; // Перенаправление на админ панель
     } else if (username === 'owner' && password === 'owner123') {
         localStorage.setItem('userRole', 'owner');
         logAction('Основатель вошел в систему'); // Логируем действие
-        window.location.href = 'owner-panel.html'; // Перенаправление на панель основателя
+        window.location.href = 'ownerPanel.html'; // Перенаправление на панель основателя
     } else {
         alert('Неверный логин или пароль');
     }
