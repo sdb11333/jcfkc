@@ -41,7 +41,7 @@
                     window.location.href = 'ownerPanel.html'; // Панель основателя
                 } else if (user.role === 'admin') {
                     window.location.href = 'adminPanel.html'; // Панель администратора
-                } else {
+                } else if (user.role === 'user') {
                     window.location.href = 'userPanel.html'; // Панель пользователя
                 }
             } else {
