@@ -1,9 +1,11 @@
+// Логика для входа
 document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
+    event.preventDefault(); // Отменить отправку формы
+
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
+    // Проверяем логин и пароль
     if (username === 'admin' && password === 'admin123') {
         localStorage.setItem('userRole', 'admin');
         window.location.href = 'admin-panel.html'; // Перенаправление на админ панель
