@@ -3,34 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ Панель</title>
+    <title>Панель администратора</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="admin-script.js" defer></script>
 </head>
 <body>
 
-    <div class="sidebar">
-        <h2>Админ Панель</h2>
-        <ul>
-            <li><a href="#home">Главная</a></li>
-            <li><a href="#users">Пользователи</a></li>
-            <li><a href="#logs">Журнал действий</a></li>
-            <li><a href="#security">Безопасность</a></li>
-            <li><a href="#reports">Отчеты</a></li>
-            <li><a href="#" onclick="logout()">Выход</a></li>
-        </ul>
-    </div>
+    <header>
+        <h1>Панель администратора</h1>
+    </header>
 
-    <div class="main-content">
-        <section id="home">
-            <h1>Добро пожаловать в админ панель!</h1>
-        </section>
-        <!-- Дополнительные разделы -->
-    </div>
+    <section>
+        <h2>Управление пользователями</h2>
+        <button onclick="window.location.href='manage-users.html'">Управлять пользователями</button>
+    </section>
 
-</body>
-</html>
+    <section>
+        <h2>Журнал действий</h2>
+        <table id="log-table">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Пользователь</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Журнал действий -->
+            </tbody>
+        </table>
+    </section>
 
+    <section>
+        <h2>Отчеты и статистика</h2>
+        <button onclick="downloadReport()">Скачать отчет</button>
+    </section>
+
+    <footer>
+        <button onclick="window.location.href='index.html'">На главную</button>
+        <button onclick="window.location.href='login.html'">Выйти</button>
+    </footer>
+
+    <script>
+        function downloadReport() {
+            // Для примера, просто выводим отчет в консоль
+            const reportData = {
+                users: localStorage.length, // Количество пользователей
+                logs: JSON.parse(localStorage.getItem('logs') || '[]').length // Количество логов
+            };
+            console.log('Отчет: ', reportData);
+            alert("Отчет скачан (данные в консоли).");
+        }
+    </script>
 
 </body>
 </html>
