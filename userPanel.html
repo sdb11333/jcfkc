@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель пользователя</title>
+    <script>
+        window.onload = function() {
+            const userRole = localStorage.getItem('userRole');
+            if (userRole !== 'user') {
+                window.location.href = 'login.html'; // Если роль не user, перенаправляем на страницу входа
+            }
+        };
+    </script>
+</head>
+<body>
+
+    <header>
+        <h1>Панель пользователя</h1>
+        <button onclick="window.location.href='login.html'">Выйти</button>
+    </header>
+
+    <main>
+        <p>Добро пожаловать в панель пользователя!</p>
+        <button onclick="window.location.href='index.html'">На главную</button>
+    </main>
+
+    <footer>
+        <p>© 2025 Все права защищены</p>
+    </footer>
+
+</body>
+</html>
