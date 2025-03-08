@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация на сайте</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        // Функция для регистрации пользователя
+        function register() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value; // Роль выбирает пользователь
+
+            if (username && password && role) {
+                // Проверка на наличие такого пользователя
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                const userExists = users.some(user => user.username === username);
+
+                if (userExists) {
+                    alert('Пользователь с таким именем уже существует.');
+                    return;
+                }
+
+                // Создание нового пользователя
+                const newUser = {
+                    username,
+                    password,
+                    role // Роль будет передана из формы
+                };
+
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users)); // Сохраняем в localStorage
+
+                alert('Регистрация прошла успешно! Добро пожаловать!');
+                window.location.href = 'login.html'; // Перенаправляем на страницу входа
+            } else {
+                alert('Пожалуйста, заполните все поля.');
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <header>
+        <h1>Регистрация на сайте</h1>
+    </header>
+
+    <main>
+        <form onsubmit="event.preventDefault(); register();">
+            <label for="username">Имя пользователя:</label>
+            <input type="text" id="username" name="username" required><br>
+
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required><br>
+
+            <label for="role">Роль:</label>
+            <select id="role" name="role">
+                <option value="user">Пользователь</option>
+                <option value="admin">Администратор</option>
+                <option value="owner">Основатель</option>
+            </select><br>
+
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>© 2025 Все права защищены</p>
+        <a href="login.html">Уже есть аккаунт? Войти</a>
+    </footer>
+
+</body>
+</html>
